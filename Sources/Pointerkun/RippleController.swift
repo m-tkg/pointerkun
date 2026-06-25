@@ -11,6 +11,8 @@ final class RippleController {
     private var settings = RippleSettings()
     /// アニメーション完了まで保持するアクティブな窓（終わったら解放する）。
     private var activeWindows: [NSWindow] = []
+    /// リップル表示中、カーソルに追従させるためのトラッカー。
+    private let tracker = MouseTracker()
 
     func update(_ newSettings: RippleSettings) {
         settings = newSettings
@@ -32,6 +34,7 @@ final class RippleController {
 
         window.orderFrontRegardless()
         activeWindows.append(window)
+        startFollowing()
 
         // 全リング（時間差含む）が終わる頃に窓を片付ける。
         let total = settings.duration * 1.25 + 0.05
@@ -39,7 +42,22 @@ final class RippleController {
             guard let self, let window else { return }
             window.orderOut(nil)
             self.activeWindows.removeAll { $0 === window }
+            // アクティブな窓が無くなったら追従を止める。
+            if self.activeWindows.isEmpty {
+                self.tracker.stop()
+            }
         }
+    }
+
+    /// カーソル移動に合わせて、アクティブなリップル窓すべてをカーソル中心へ移動する。
+    private func startFollowing() {
+        tracker.onMove = { [weak self] point in
+            guard let self else { return }
+            for window in self.activeWindows {
+                window.setFrameOrigin(OverlayGeometry.originCentered(at: point, size: window.frame.size))
+            }
+        }
+        tracker.start() // 既に動作中なら何もしない。
     }
 
     /// 縁取り円レイヤーを1本追加し、拡大＋フェードのアニメーションを付ける。
