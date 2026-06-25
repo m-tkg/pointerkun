@@ -1,0 +1,68 @@
+/* Menu (StatusBarController) */
+"menu.version" = "Pointerkun %@";
+"menu.show_locator" = "Show Locator";
+"menu.settings" = "Settings…";
+"menu.check_update" = "Check for Updates…";
+"menu.install_update" = "Install Update %@…";
+"menu.quit" = "Quit Pointerkun";
+"menu_bar.local" = "Local";
+
+/* Settings window */
+"settings.window.title" = "Pointerkun Settings";
+"tab.general" = "General";
+"tab.highlight" = "Highlight";
+"tab.locator" = "Locator";
+
+"button.cancel" = "Cancel";
+"button.apply" = "Apply";
+"button.ok" = "OK";
+
+/* General tab */
+"settings.launch_at_login" = "Launch at login";
+"settings.version" = "Version %@";
+
+/* Highlight tab (feature 2 + 3) */
+"highlight.enabled" = "Show a translucent circle around the pointer";
+"highlight.hotkey" = "Toggle hotkey";
+"highlight.color" = "Circle color";
+"highlight.diameter" = "Diameter";
+"highlight.description" = "Keeps a translucent circle on the pointer so the audience can follow it during demos and presentations.";
+
+/* Locator tab (feature 1 + 3) */
+"locator.hotkey" = "Hotkey";
+"locator.color" = "Ripple color";
+"locator.max_diameter" = "Max diameter";
+"locator.line_width" = "Line width";
+"locator.duration" = "Duration";
+"locator.description" = "Press the hotkey to ripple expanding circles from the pointer so you can find it instantly.";
+"hotkey.recording" = "Press keys…";
+
+/* Common units */
+"common.points" = "%.0f pt";
+"common.seconds" = "%.1f s";
+
+/* Update flow */
+"update.latest" = "Pointerkun %@ is the latest version.";
+"update.check_failed" = "Failed to check for updates: %@";
+"update.available.title" = "Update %@ is available";
+"update.available.body" = "You are currently on %@. Install the update now?";
+"update.button.update" = "Update";
+"update.button.open_release" = "Open Release Page";
+"update.failed" = "Update failed: %@";
+
+/* Login item */
+"login_item.requires_approval" = "Login items are disabled. Enable Pointerkun in System Settings > General > Login Items.";
+
+/* Alerts */
+"alert.error.title" = "Error";
+
+/* Update errors */
+"error.fetch_release_http" = "Failed to fetch release info (HTTP %d).";
+"error.parse_release" = "Failed to parse release info.";
+"error.no_zip_asset" = "No .zip asset found in the release.";
+"error.download_http" = "Download failed (HTTP %d).";
+"error.not_writable" = "Cannot write to the app bundle: %@";
+"error.no_zip" = "Downloaded archive was not found.";
+"error.command_failed" = "Command failed: %@";
+"error.no_app_in_archive" = "No .app found in the downloaded archive.";
+"error.bundle_id_mismatch" = "The downloaded app has a different bundle identifier.";
