@@ -1,0 +1,7 @@
+.build/
+.swiftpm/
+*.app
+*.zip
+DerivedData/
+.DS_Store
+*.bak

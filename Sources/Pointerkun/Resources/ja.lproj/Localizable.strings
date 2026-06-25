@@ -1,0 +1,68 @@
+/* Menu (StatusBarController) */
+"menu.version" = "Pointerkun %@";
+"menu.show_locator" = "ロケーターを表示";
+"menu.settings" = "設定…";
+"menu.check_update" = "アップデートを確認…";
+"menu.install_update" = "アップデート %@ をインストール…";
+"menu.quit" = "Pointerkun を終了";
+"menu_bar.local" = "ローカル";
+
+/* Settings window */
+"settings.window.title" = "Pointerkun 設定";
+"tab.general" = "一般";
+"tab.highlight" = "ハイライト円";
+"tab.locator" = "ロケーター";
+
+"button.cancel" = "キャンセル";
+"button.apply" = "適用";
+"button.ok" = "OK";
+
+/* General tab */
+"settings.launch_at_login" = "ログイン時に起動";
+"settings.version" = "バージョン %@";
+
+/* Highlight tab (feature 2 + 3) */
+"highlight.enabled" = "ポインタの周りに半透明の円を表示する";
+"highlight.hotkey" = "表示切替ホットキー";
+"highlight.color" = "円の色";
+"highlight.diameter" = "直径";
+"highlight.description" = "ポインタに半透明の円を重ねて常に表示します。デモやプレゼンで聴衆がポインタを追いやすくなります。";
+
+/* Locator tab (feature 1 + 3) */
+"locator.hotkey" = "ホットキー";
+"locator.color" = "リップルの色";
+"locator.max_diameter" = "最大直径";
+"locator.line_width" = "線の太さ";
+"locator.duration" = "継続時間";
+"locator.description" = "ホットキーを押すと、ポインタを中心に円が広がるエフェクトを表示します。ポインタの位置をすぐに見つけられます。";
+"hotkey.recording" = "キーを押してください…";
+
+/* Common units */
+"common.points" = "%.0f pt";
+"common.seconds" = "%.1f 秒";
+
+/* Update flow */
+"update.latest" = "Pointerkun %@ は最新です。";
+"update.check_failed" = "アップデートの確認に失敗しました: %@";
+"update.available.title" = "アップデート %@ が利用可能です";
+"update.available.body" = "現在のバージョンは %@ です。今すぐインストールしますか?";
+"update.button.update" = "アップデート";
+"update.button.open_release" = "リリースページを開く";
+"update.failed" = "アップデートに失敗しました: %@";
+
+/* Login item */
+"login_item.requires_approval" = "ログイン項目が無効になっています。システム設定 > 一般 > ログイン項目 で Pointerkun を有効にしてください。";
+
+/* Alerts */
+"alert.error.title" = "エラー";
+
+/* Update errors */
+"error.fetch_release_http" = "リリース情報の取得に失敗しました (HTTP %d)。";
+"error.parse_release" = "リリース情報の解析に失敗しました。";
+"error.no_zip_asset" = "リリースに .zip アセットが見つかりません。";
+"error.download_http" = "ダウンロードに失敗しました (HTTP %d)。";
+"error.not_writable" = "アプリバンドルに書き込めません: %@";
+"error.no_zip" = "ダウンロードしたアーカイブが見つかりません。";
+"error.command_failed" = "コマンドが失敗しました: %@";
+"error.no_app_in_archive" = "アーカイブ内に .app が見つかりません。";
+"error.bundle_id_mismatch" = "ダウンロードしたアプリのバンドルIDが一致しません。";
