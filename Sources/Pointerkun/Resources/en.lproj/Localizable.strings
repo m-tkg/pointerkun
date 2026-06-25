@@ -1,6 +1,5 @@
 /* Menu (StatusBarController) */
 "menu.version" = "Pointerkun %@";
-"menu.show_locator" = "Show Locator";
 "menu.settings" = "Settings…";
 "menu.check_update" = "Check for Updates…";
 "menu.install_update" = "Install Update %@…";
