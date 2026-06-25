@@ -6,7 +6,6 @@ import AppKit
 final class StatusBarController: NSObject {
     private let statusItem: NSStatusItem
 
-    private let showLocator: () -> Void
     private let openSettings: () -> Void
     private let checkForUpdate: () -> Void
     private let quitApp: () -> Void
@@ -20,13 +19,11 @@ final class StatusBarController: NSObject {
     }
 
     init(
-        showLocator: @escaping () -> Void,
         openSettings: @escaping () -> Void,
         checkForUpdate: @escaping () -> Void,
         quit: @escaping () -> Void
     ) {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        self.showLocator = showLocator
         self.openSettings = openSettings
         self.checkForUpdate = checkForUpdate
         self.quitApp = quit
@@ -56,7 +53,6 @@ final class StatusBarController: NSObject {
         versionItem.isEnabled = false
         menu.addItem(versionItem)
         menu.addItem(.separator())
-        menu.addItem(menuItem(title: L.string("menu.show_locator"), action: #selector(handleShowLocator), key: ""))
         menu.addItem(menuItem(title: L.string("menu.settings"), action: #selector(handleOpenSettings), key: ","))
         updateItem = menuItem(title: Self.checkUpdateTitle, action: #selector(handleCheckForUpdate), key: "")
         menu.addItem(updateItem)
@@ -81,7 +77,6 @@ final class StatusBarController: NSObject {
         return item
     }
 
-    @objc private func handleShowLocator() { showLocator() }
     @objc private func handleOpenSettings() { openSettings() }
     @objc private func handleCheckForUpdate() { checkForUpdate() }
     @objc private func handleQuit() { quitApp() }

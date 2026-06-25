@@ -37,7 +37,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         applySettings(settings)
 
         statusBar = StatusBarController(
-            showLocator: { [weak self] in self?.ripple.fire() },
             openSettings: { [weak self] in self?.openSettings() },
             checkForUpdate: { [weak self] in self?.startUpdateCheck(interactive: true) },
             quit: { NSApp.terminate(nil) }
