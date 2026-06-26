@@ -16,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusBar: StatusBarController?
     private var settingsWindowController: SettingsWindowController?
+    private var kuntraykunBridge: KuntraykunBridge?
     private var settings = Settings.default
 
     // 機能ごとの安定したホットキー ID。
@@ -41,6 +42,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             checkForUpdate: { [weak self] in self?.startUpdateCheck(interactive: true) },
             quit: { NSApp.terminate(nil) }
         )
+
+        // kuntraykun 連携: 管理対象なら自分のアイコンを隠し、showMenu でメニューを出す。
+        let bridge = KuntraykunBridge(
+            setHidden: { [weak self] hidden in self?.statusBar?.setManagedHidden(hidden) },
+            popUpMenu: { [weak self] point in self?.statusBar?.popUpMenu(at: point) }
+        )
+        bridge.start()
+        kuntraykunBridge = bridge
 
         // 起動時にサイレントで更新チェック（あればメニュー文言を変更）。
         startUpdateCheck(interactive: false)

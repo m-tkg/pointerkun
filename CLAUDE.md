@@ -158,3 +158,12 @@ GitHub Releases から最新版を取得して自己更新する。
 - 新機能の追加手順: ①判定ロジックを `Core` に純粋実装＋テスト → ②`Settings` にサブ構造体を足す →
   ③設定 UI にタブを足す → ④GUI 文字列を en/ja 両方に対訳追加。
 - リリースは `Info.plist` の `CFBundleShortVersionString` を上げて `main` に push（署名＋公証は CI が実施）。
+
+## Kuntraykun 連携（実装済み）
+
+本アプリは kuntraykun（`com.mtkg.kuntraykun`）にメニューバーアイコンを集約させる連携に対応している。
+- 実装: `Sources/Pointerkun/KuntraykunBridge.swift`（分散通知の送受信・アイコン表示制御）、
+  `StatusBarController.swift`（`setManagedHidden(_:)` / `popUpMenu(at:)` と `menu` のプロパティ化）、
+  `AppDelegate.swift`（`bridge.start()` の配線）。
+- 仕様: kuntraykun リポジトリ `docs/kun-integration-protocol.md`、共通方針は `../CLAUDE_base.md`「Kuntraykun 連携」。
+- 管理対象フラグは `UserDefaults`（キー `KuntraykunManaged`）に永続化する。
