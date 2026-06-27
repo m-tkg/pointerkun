@@ -14,6 +14,17 @@
 - 円の描画は `CAShapeLayer` + `CABasicAnimation`（リップル）。マルチディスプレイは `NSEvent.mouseLocation` のグローバル座標で自然対応。
 - 真の「システムカーソルそのものの色・サイズ変更」は公開 API では全画面に渡って実現困難。本アプリはハイライト円でそれを代替する。
 - bundle ID は `com.mtkg.pointerkun`。Core モジュールは `PointerkunCore`、リソースバンドルは `Pointerkun_Pointerkun.bundle`。
+- **アップデートの定期監視＋赤バッジ**（CLAUDE_base.md 「### 4」のバッジ実装方針を踏襲）:
+  - 監視は `AppDelegate` に集約。起動時の `startUpdateCheck(interactive:false)` に加え、`startUpdateMonitoring()` で
+    `Timer`（既定 6 時間・`tolerance` 10%、`MainActor.assumeIsolated` でチェック呼び出し）＋
+    `NSWorkspace.didWakeNotification`（復帰時に即チェック）を配線する。間隔は GitHub 未認証 API の 60回/時 を踏まえる。
+  - 赤バッジは `StatusBarController.setupBadge(on:)` で `statusItem.button` に `NSView`＋`CALayer` の赤丸を
+    オーバーレイ。ベースアイコンは `isTemplate = true` のまま維持し、Auto Layout で**アイコン画像の幅基準**の右下に固定
+    （`leading = button.leading + (iconWidth - badgeSize)`, `bottom = button.bottom`、白の細い縁取り付き）。
+  - 表示/非表示は更新有無の集約点 `setUpdateAvailable`（→表示）/ `clearUpdateAvailable`（→非表示）に
+    `badgeView.isHidden` トグルとして置き、起動・定期・手動の全チェック経路で同期させる。
+  - 既知の制約: kuntraykun に集約され `setManagedHidden(true)` で自分のアイコンを隠している間はバッジも見えない
+    （集約先への伝搬は連携プロトコルの拡張が必要）。
 
 ## Core（TDD 対象）に置くもの
 - `Settings` / `SettingsStore`（JSON 永続化、欠損キー補完）
