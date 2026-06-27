@@ -13,6 +13,12 @@ final class StatusBarController: NSObject {
     private let quitApp: () -> Void
     private var updateItem: NSMenuItem!
 
+    /// 新バージョンが利用可能なとき、アイコン右下に出す赤バッジ（小さな赤丸）。
+    /// 更新有無の集約点（`setUpdateAvailable`/`clearUpdateAvailable`）で表示/非表示を切り替える。
+    private var badgeView: NSView?
+    /// 赤バッジの直径（pt）。アイコン（高さ 18pt）に対する「小さな赤丸」。
+    private static let badgeSize: CGFloat = 7
+
     private static var checkUpdateTitle: String { L.string("menu.check_update") }
 
     /// ローカル検証ビルド（バンドルID が `.local` で終わる）かどうか。
@@ -45,6 +51,7 @@ final class StatusBarController: NSObject {
                 button.title = " " + L.string("menu_bar.local")
                 button.imagePosition = .imageLeading
             }
+            setupBadge(on: button)
         }
 
         // 先頭にバージョン情報（操作不可）。ローカルビルドは併記する。
@@ -62,14 +69,16 @@ final class StatusBarController: NSObject {
         statusItem.menu = menu
     }
 
-    /// 新バージョンが利用可能なときにメニュー文言を変更する。
+    /// 新バージョンが利用可能なときにメニュー文言を変更し、アイコンに赤バッジを出す。
     func setUpdateAvailable(tag: String) {
         updateItem.title = L.format("menu.install_update", tag)
+        badgeView?.isHidden = false
     }
 
-    /// 最新（更新なし）状態に戻す。
+    /// 最新（更新なし）状態に戻し、赤バッジを消す。
     func clearUpdateAvailable() {
         updateItem.title = Self.checkUpdateTitle
+        badgeView?.isHidden = true
     }
 
     // MARK: - kuntraykun 連携
@@ -93,6 +102,42 @@ final class StatusBarController: NSObject {
     @objc private func handleOpenSettings() { openSettings() }
     @objc private func handleCheckForUpdate() { checkForUpdate() }
     @objc private func handleQuit() { quitApp() }
+
+    /// アイコン右下に赤バッジ（小さな赤丸）をオーバーレイする。初期状態は非表示。
+    ///
+    /// ベースアイコンは template（明暗に自動着色）のまま維持したいので、画像に焼き込まず
+    /// 別 view（`wantsLayer` の `CALayer`）として `button` に重ねる。位置は **trailing ではなく
+    /// アイコン画像の幅基準**で固定し（`leading = button.leading + (iconWidth - badgeSize)`,
+    /// `bottom = button.bottom`）、「ローカル」テキスト併記時（`imagePosition = .imageLeading`）でも
+    /// 常にアイコングリフの右下に乗るようにする。手動 frame は bounds 確定タイミングに依存して
+    /// 不安定なため Auto Layout を使う。
+    private func setupBadge(on button: NSStatusBarButton) {
+        // アイコン画像の幅（テンプレート画像は高さ 18pt に正規化済み）。画像が無い場合の保険に既定値。
+        let iconWidth = button.image?.size.width ?? Self.badgeSize
+
+        let badge = NSView()
+        badge.translatesAutoresizingMaskIntoConstraints = false
+        badge.wantsLayer = true
+        if let layer = badge.layer {
+            layer.backgroundColor = NSColor.systemRed.cgColor
+            layer.cornerRadius = Self.badgeSize / 2
+            layer.masksToBounds = true
+            // メニューバー背景（明暗どちらでも）に溶けないよう細い白の縁取りを付ける。
+            layer.borderWidth = 1
+            layer.borderColor = NSColor.white.cgColor
+        }
+        badge.isHidden = true
+        button.addSubview(badge)
+
+        NSLayoutConstraint.activate([
+            badge.widthAnchor.constraint(equalToConstant: Self.badgeSize),
+            badge.heightAnchor.constraint(equalToConstant: Self.badgeSize),
+            badge.leadingAnchor.constraint(
+                equalTo: button.leadingAnchor, constant: iconWidth - Self.badgeSize),
+            badge.bottomAnchor.constraint(equalTo: button.bottomAnchor),
+        ])
+        badgeView = badge
+    }
 
     /// メニューバー用のテンプレート（モノクロ）画像を返す。
     /// `Resources/MenuBarIcon.png` を読み込み、テンプレート指定で明暗に追従させる。
