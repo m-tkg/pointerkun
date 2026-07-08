@@ -2,6 +2,7 @@ import AppKit
 import OSLog
 import PointerkunCore
 import KunIntegrationBridge
+import KunUpdateKit
 
 private let log = Logger(subsystem: "com.mtkg.pointerkun", category: "app")
 
@@ -35,8 +36,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var availableRelease: ReleaseInfo?
     /// 定期サイレントチェック用タイマー。
     private var updateTimer: Timer?
-    /// 定期チェック間隔。GitHub 未認証 API のレート制限（60回/時）に対し十分に余裕を持たせる。
-    private static let updateCheckInterval: TimeInterval = 6 * 60 * 60
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         settings = store.load()
@@ -74,14 +73,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     ///   （ノート PC で「閉じている間に新版が出た」ケースに対応）。
     private func startUpdateMonitoring() {
         let timer = Timer.scheduledTimer(
-            withTimeInterval: Self.updateCheckInterval, repeats: true
+            withTimeInterval: KunUpdateSchedule.checkInterval, repeats: true
         ) { [weak self] _ in
             // タイマーのコールバックは非分離なので、メインスレッド上で MainActor 隔離を明示する。
             MainActor.assumeIsolated {
                 self?.startUpdateCheck(interactive: false)
             }
         }
-        timer.tolerance = Self.updateCheckInterval * 0.1
+        timer.tolerance = KunUpdateSchedule.checkIntervalTolerance
         updateTimer = timer
 
         NSWorkspace.shared.notificationCenter.addObserver(
