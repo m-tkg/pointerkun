@@ -10,12 +10,16 @@ let package = Package(
     ],
     dependencies: [
         // kuntraykun 連携（プロトコル定数・Bridge・アイコン/メニュー書き出し）の共有ライブラリ。
-        .package(url: "https://github.com/m-tkg/kunkit.git", from: "1.0.0")
+        .package(url: "https://github.com/m-tkg/kunkit.git", from: "1.2.0")
     ],
     targets: [
-        // 純粋ロジック（テスト対象）: AppKit/Carbon に依存しない設定モデル・座標計算・バージョン比較
+        // 純粋ロジック（テスト対象）: AppKit/Carbon に依存しない設定モデル・座標計算
         .target(
-            name: "PointerkunCore"
+            name: "PointerkunCore",
+            dependencies: [
+                // ReleaseInfo / VersionComparator は kunkit（KunUpdateKit）へ移設した。
+                .product(name: "KunUpdateKit", package: "kunkit"),
+            ]
         ),
         // 実行ファイル本体: メニューバー常駐・オーバーレイ描画・ホットキー・ポインタ追従・設定UI
         .executableTarget(

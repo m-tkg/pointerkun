@@ -1,5 +1,6 @@
 import AppKit
 import OSLog
+import KunUpdateKit
 import PointerkunCore
 
 private let logger = Logger(subsystem: "com.mtkg.pointerkun", category: "SelfUpdater")
