@@ -8,6 +8,10 @@ let package = Package(
     platforms: [
         .macOS(.v13)
     ],
+    dependencies: [
+        // kuntraykun 連携（プロトコル定数・Bridge・アイコン/メニュー書き出し）の共有ライブラリ。
+        .package(url: "https://github.com/m-tkg/kunkit.git", from: "1.0.0")
+    ],
     targets: [
         // 純粋ロジック（テスト対象）: AppKit/Carbon に依存しない設定モデル・座標計算・バージョン比較
         .target(
@@ -16,7 +20,10 @@ let package = Package(
         // 実行ファイル本体: メニューバー常駐・オーバーレイ描画・ホットキー・ポインタ追従・設定UI
         .executableTarget(
             name: "Pointerkun",
-            dependencies: ["PointerkunCore"],
+            dependencies: [
+                "PointerkunCore",
+                .product(name: "KunIntegrationBridge", package: "kunkit"),
+            ],
             // en.lproj / ja.lproj の Localizable.strings をリソースバンドルに含める。
             resources: [
                 .process("Resources")
