@@ -1,7 +1,9 @@
 import AppKit
 import OSLog
 import PointerkunCore
+import KunAppKit
 import KunIntegrationBridge
+import KunSupport
 import KunUpdateKit
 
 private let log = Logger(subsystem: "com.mtkg.pointerkun", category: "app")
@@ -9,7 +11,8 @@ private let log = Logger(subsystem: "com.mtkg.pointerkun", category: "app")
 /// アプリ本体。設定の読込・反映、各機能コントローラとステータスバー UI・設定ウィンドウの配線を担う。
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let store = SettingsStore(url: SettingsStore.defaultURL())
+    private let store = KunSettingsStore<Settings>(
+        url: KunSettingsStore<Settings>.defaultURL(appFolderName: "Pointerkun"), defaultValue: .default)
 
     // 機能コントローラ。
     private let highlight = HighlightController()
@@ -32,7 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // アップデート関連。
     private let updateService = UpdateService()
-    private lazy var selfUpdater = SelfUpdater(service: updateService)
+    private let selfUpdater = SelfUpdater(appName: "Pointerkun")
     private var availableRelease: ReleaseInfo?
     /// 定期サイレントチェック用タイマー。
     private var updateTimer: Timer?

@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import Carbon.HIToolbox
+import KunAppKit
 import PointerkunCore
 
 /// 設定ダイアログの編集状態。変更は即時反映する（Apply/OK は持たない）。
