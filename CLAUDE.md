@@ -233,22 +233,16 @@ GitHub Releases から最新版を取得して自己更新する。
 - リリースは `Info.plist` の `CFBundleShortVersionString` を上げて `main` にマージし、
   `make release-tag` でタグを作成・push する（署名＋公証は CI が実施）。
 
-## Kuntraykun 連携（実装済み）
+## Kuntraykun 連携（実装済み・kunkit 利用）
 
-本アプリは kuntraykun（`com.mtkg.kuntraykun`）にメニューバーアイコンを集約させる連携に対応している。
-- 実装: `Sources/Pointerkun/KuntraykunBridge.swift`（分散通知の送受信・アイコン表示制御）、
-  `StatusBarController.swift`（`setManagedHidden(_:)` / `popUpMenu(at:)` と `menu` のプロパティ化）、
-  `AppDelegate.swift`（`bridge.start()` の配線）。
+本アプリは kuntraykun（`com.mtkg.kuntraykun`）にメニューバーアイコンを集約させる連携（v1〜v4:
+アイコン集約・実アイコン書き出し・アップデート集約・サブメニュー表示）に対応している。
+- **実装は共有ライブラリ [kunkit](https://github.com/m-tkg/kunkit)**（SPM 依存、`KunIntegrationBridge` プロダクト）。
+  `KuntraykunBridge` / `KuntraykunIconExport` / `KuntraykunMenuExport` を提供し、アプリ側に連携ロジックの複製は持たない。
+- 配線: `StatusBarController.makeKuntraykunBridge()`（`KuntraykunBridge(statusItem:menu:)` の標準配線）を
+  `AppDelegate` が `bridge.start()` する。start() が観測開始・`appLaunched` 送信・初回メニュー書き出しまで行う。
+  アイコン書き出し（v2）は `StatusBarController` init の `KuntraykunIconExport.export(_:)`、
+  アップデート報告（v3）は `kuntraykunBridge?.reportUpdate(_:)`、
+  メニュー文言の変化（v4）は `statusBar.onMenuContentChanged` → `bridge.exportMenuSnapshot()`（表示中は自動保留）。
 - 仕様: kuntraykun リポジトリ `docs/kun-integration-protocol.md`、共通方針は `../CLAUDE_base.md`「Kuntraykun 連携」。
-- 管理対象フラグは `UserDefaults`（キー `KuntraykunManaged`）に永続化する。
-- **実アイコンのライブ書き出し（v2）**: `KuntraykunIconExport.export(_:)`（`Sources/Pointerkun/KuntraykunIconExport.swift`）で、
-  `StatusBarController` がメニューバーアイコンを設定する箇所で現在アイコンを
-  `~/Library/Application Support/Kuntraykun/MenuBarIcons/<基底ID>.png` に書き出す（テンプレートは `.template` マーカー併記）。
-  kuntraykun はこれを優先して一覧に表示する。
-- **メニュースナップショットの共有（v4）**: `KuntraykunMenuExport.export(_:)`（`Sources/Pointerkun/KuntraykunMenuExport.swift`）で、
-  メニュー構造を JSON で `~/Library/Application Support/Kuntraykun/Menus/<基底ID>.json` に原子的に書き出し、
-  `com.mtkg.kun.menuSnapshot` 通知で知らせる。kuntraykun はこれをプルダウンの**サブメニュー**として表示し、
-  項目クリックを `invokeMenuItem` で依頼してくる（`KuntraykunMenuExport.performItem(id:in:)` が実行）。
-  `KuntraykunBridge` が `requestMenu` / `invokeMenuItem` を観測し、書き出しは
-  起動時・requestMenu 受信時・メニュー文言の変化時（`setUpdateAvailable` / `clearUpdateAvailable`）・実行後に行う。
-  invokeMenuItem は世代（generation）が現行スナップショットと一致するときだけ実行する（不一致なら再書き出しのみ）。
+- 管理対象フラグは kunkit が `UserDefaults`（キー `KuntraykunManaged`）に永続化する。
